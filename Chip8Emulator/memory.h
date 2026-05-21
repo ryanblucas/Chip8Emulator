@@ -37,6 +37,8 @@ namespace chip8
 		memory();
 		memory(std::string_view program_path);
 
+		// operator[] is not used here because the range check for getting
+		// a byte is different than the range check for setting a byte
 		byte get_byte(address addr) const;
 		void set_byte(address addr, byte byte);
 		memory_instruction get_instruction(address addr) const;
