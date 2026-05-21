@@ -1,0 +1,85 @@
+#pragma once
+
+#include "window.h"
+
+namespace chip8
+{
+	enum opcode : uint16_t
+	{
+		CLEAR_DISPLAY = 0x00E0,
+		RETURN = 0x00EE,
+		JUMP = 0x1000,
+		CALL = 0x2000,
+		SKIP_IFEQK = 0x3000,
+		SKIP_IFNEQK = 0x4000,
+		SKIP_IFEQV = 0x5000,
+		ASSIGNK = 0x6000,
+		ADDK = 0x7000,
+		ASSIGNV = 0x8000,
+		OR = 0x8001,
+		AND = 0x8002,
+		XOR = 0x8003,
+		ADD = 0x8004,
+		SUB_XY = 0x8005,
+		SHR = 0x8006,
+		SUB_YX = 0x8007,
+		SHL = 0x800E,
+		SKIP_IFNEQV = 0x9000,
+		ASSIGN_ADDRESS = 0xA000,
+		JUMP_PLUSV0 = 0xB000,
+		RNG_ANDK = 0xC000,
+		DRAW = 0xD000,
+		SKIP_IF_PRESSED = 0xE09E,
+		SKIP_IFN_PRESSED = 0xE0A1,
+		GET_DELAY_TIMER = 0xF007,
+		WAIT_FOR_KEY = 0xF00A,
+		ASSIGN_DELAY_TIMER = 0xF015,
+		ASSIGN_SOUND_TIMER = 0xF018,
+		ADD_ADDRESS = 0xF01E,
+		SET_ADDRESS_TO_FONT = 0xF029,
+		STORE_BCD_REP = 0xF033,
+		REG_DUMP = 0xF055,
+		MEM_DUMP = 0xF065,
+	};
+
+	class interpreter
+	{
+	public:
+		interpreter(std::string_view program_directory) : m_memory(program_directory), m_window()
+		{
+			m_registers = {};
+			m_stack = {};
+			m_program_counter = memory::PROGRAM_START;
+			m_stack_pointer = 0;
+			m_address_register = 0;
+			m_sound_timer = m_timer = 0; 
+			m_running = true;
+			m_waiting_result = 0;
+		}
+		memory& get_memory()
+		{
+			return m_memory;
+		}
+		window& get_window()
+		{
+			return m_window;
+		}
+		void run();
+	private:
+		memory m_memory;
+		window m_window;
+
+		std::array<byte, 16> m_registers;
+		std::array<address, 16> m_stack;
+		address m_program_counter;
+		int m_stack_pointer;
+		address m_address_register;
+		int m_sound_timer;
+		int m_timer;
+
+		bool m_running;
+		int m_waiting_result;
+
+		void do_cycle();
+	};
+}
