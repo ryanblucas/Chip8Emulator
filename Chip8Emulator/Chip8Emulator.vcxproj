@@ -168,12 +168,12 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="IBM Logo.ch8">
+    <CopyFileToFolders Include="tests\IBM Logo.ch8">
       <FileType>Document</FileType>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Zero Demo [zeroZshadow, 2007].ch8" />
+    <None Include="tests\Zero Demo [zeroZshadow, 2007].ch8" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

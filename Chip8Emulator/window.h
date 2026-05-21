@@ -6,6 +6,14 @@
 
 namespace chip8
 {
+	enum class return_code
+	{
+		STILL_RUNNING,
+		X_BUTTON,
+		ESCAPE_KEY,
+		UNKNOWN,
+	};
+
 	class window
 	{
 	public:
@@ -22,15 +30,15 @@ namespace chip8
 		{
 			return m_window_thread;
 		}
-		bool is_open() const
+		return_code get_return_code() const
 		{
-			return m_window_thread_open;
+			return m_window_thread_code;
 		}
 	private:
 		screen m_screen;
 		keypad m_keypad;
 		std::jthread m_window_thread;
-		bool m_window_thread_open;
+		return_code m_window_thread_code;
 
 		void thread_proc();
 	};

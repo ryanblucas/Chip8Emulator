@@ -226,7 +226,7 @@ void interpreter::run()
 	auto last = std::chrono::steady_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(last.time_since_epoch());
 	std::srand(static_cast<unsigned int>(duration.count()));
-	while (m_window.is_open() && m_running)
+	while (m_window.get_return_code() == return_code::STILL_RUNNING && m_running)
 	{
 		if (m_waiting_result != 0)
 		{
