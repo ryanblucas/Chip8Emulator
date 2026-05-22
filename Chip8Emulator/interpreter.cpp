@@ -73,6 +73,8 @@ void interpreter::do_cycle()
 		break;
 	case 0x8000:
 	{
+		// flags here must always be assigned after the operation, if changed at all b/c
+		// the register in the opcode could be the flag register
 		switch (instruction.raw & 0xF00F)
 		{
 		case opcode::ASSIGNV:
@@ -80,48 +82,63 @@ void interpreter::do_cycle()
 			break;
 		case opcode::OR:
 			m_registers[instruction.nibbles.s2] |= m_registers[instruction.nibbles.s3];
+			m_registers[0xF] = 0;
 			break;
 		case opcode::AND:
 			m_registers[instruction.nibbles.s2] &= m_registers[instruction.nibbles.s3];
+			m_registers[0xF] = 0;
 			break;
 		case opcode::XOR:
 			m_registers[instruction.nibbles.s2] ^= m_registers[instruction.nibbles.s3];
+			m_registers[0xF] = 0;
 			break;
 		case opcode::ADD:
 		{
 			int res = m_registers[instruction.nibbles.s2] + m_registers[instruction.nibbles.s3];
+			m_registers[instruction.nibbles.s2] = res & 0xFF;
 			m_registers[0xF] = 0;
 			if ((res & 0xFF) != res)
 			{
 				m_registers[0xF] = 1;
 			}
-			m_registers[instruction.nibbles.s2] = res & 0xFF;
 			break;
 		}
 		case opcode::SUB_XY:
-			m_registers[0xF] = 0;
-			if (m_registers[instruction.nibbles.s2] > m_registers[instruction.nibbles.s3])
+		{
+			byte flag = 0;
+			if (m_registers[instruction.nibbles.s2] >= m_registers[instruction.nibbles.s3])
 			{
-				m_registers[0xF] = 1;
+				flag = 1;
 			}
 			m_registers[instruction.nibbles.s2] -= m_registers[instruction.nibbles.s3];
+			m_registers[0xF] = flag;
 			break;
+		}
 		case opcode::SHR:
-			m_registers[0xF] = m_registers[instruction.nibbles.s2] & 1;
+		{
+			int copy = m_registers[instruction.nibbles.s2];
 			m_registers[instruction.nibbles.s2] >>= 1;
+			m_registers[0xF] = copy & 1;
 			break;
+		}
 		case opcode::SUB_YX:
-			m_registers[0xF] = 0;
-			if (m_registers[instruction.nibbles.s2] < m_registers[instruction.nibbles.s3])
+		{
+			byte flag = 0;
+			if (m_registers[instruction.nibbles.s2] <= m_registers[instruction.nibbles.s3])
 			{
-				m_registers[0xF] = 1;
+				flag = 1;
 			}
-			m_registers[instruction.nibbles.s3] -= m_registers[instruction.nibbles.s2];
+			m_registers[instruction.nibbles.s2] = m_registers[instruction.nibbles.s3] - m_registers[instruction.nibbles.s2];
+			m_registers[0xF] = flag;
 			break;
+		}
 		case opcode::SHL:
-			m_registers[0xF] = m_registers[instruction.nibbles.s2] & 0x80;
+		{
+			int copy = m_registers[instruction.nibbles.s2];
 			m_registers[instruction.nibbles.s2] <<= 1;
+			m_registers[0xF] = !!(copy & 0x80);
 			break;
+		}
 		default:
 			throw std::runtime_error(std::format("Unknown opcode {:04X}", instruction.raw));
 			break;
@@ -145,6 +162,11 @@ void interpreter::do_cycle()
 		break;
 	case opcode::DRAW:
 	{
+		if (instruction.nibbles.s4 == 0)
+		{
+			// no-op, will fail assert in sprite constructor
+			break;
+		}
 		int x = m_registers[instruction.nibbles.s2];
 		int y = m_registers[instruction.nibbles.s3];
 		m_window.get_screen().draw_sprite(x, y, sprite(instruction.nibbles.s4, m_address_register, &m_memory));
@@ -153,7 +175,7 @@ void interpreter::do_cycle()
 	case 0xE000:
 	case 0xF000:
 	{
-		auto arg = instruction.nibbles.s2;
+		auto& arg = m_registers[instruction.nibbles.s2];
 		switch (instruction.raw & 0xF0FF)
 		{
 		case opcode::SKIP_IF_PRESSED:
@@ -169,26 +191,26 @@ void interpreter::do_cycle()
 			}
 			break;
 		case opcode::GET_DELAY_TIMER:
-			m_registers[arg] = m_timer;
+			arg = m_timer;
 			break;
 		case opcode::WAIT_FOR_KEY:
 			m_waiting_result = arg + 1;
 			break;
 		case opcode::ASSIGN_DELAY_TIMER:
-			m_timer = m_registers[arg];
+			m_timer = arg;
 			break;
 		case opcode::ASSIGN_SOUND_TIMER:
-			m_sound_timer = m_registers[arg];
+			m_sound_timer = arg;
 			break;
 		case opcode::ADD_ADDRESS:
-			m_address_register += m_registers[arg];
+			m_address_register += arg;
 			break;
 		case opcode::SET_ADDRESS_TO_FONT:
 			m_address_register = m_memory.PROGRAM_FONT_START + 0x5 * arg;
 			break;
 		case opcode::STORE_BCD_REP:
 		{
-			auto value = m_registers[arg];
+			auto value = arg;
 			// only 3 decimal digits for an 8-bit value. Trailing zeros are included
 			for (int i = 0; i < 3; i++)
 			{
@@ -198,13 +220,13 @@ void interpreter::do_cycle()
 			break;
 		}
 		case opcode::REG_DUMP:
-			for (int i = 0; i <= arg; i++)
+			for (int i = 0; i <= instruction.nibbles.s2; i++)
 			{
 				m_memory.set_byte(m_address_register + i, m_registers[i]);
 			}
 			break;
 		case opcode::MEM_DUMP:
-			for (int i = 0; i <= arg; i++)
+			for (int i = 0; i <= instruction.nibbles.s2; i++)
 			{
 				m_registers[i] = m_memory.get_byte(m_address_register + i);
 			}
@@ -252,5 +274,7 @@ void interpreter::run()
 			m_sound_timer -= m_sound_timer > 0 ? 1 : 0;
 			m_timer -= m_timer > 0 ? 1 : 0;
 		}
+		// to do: make this more accurate
+		std::this_thread::sleep_for(1000000000ns / 400);
 	}
 }

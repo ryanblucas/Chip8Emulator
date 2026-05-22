@@ -62,5 +62,5 @@ memory_instruction memory::get_instruction(address addr) const
 		throw std::runtime_error("Tried to get the instruction at an odd address");
 	}
 	// big-endian
-	return memory_instruction{ .raw = static_cast<uint16_t>(m_memory[addr] << 8 | m_memory[addr + 1]) };
+	return memory_instruction{ .raw = static_cast<uint16_t>(get_byte(addr) << 8 | get_byte(addr + 1)) };
 }

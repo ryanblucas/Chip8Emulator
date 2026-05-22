@@ -173,6 +173,15 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="tests\3-corax+.ch8">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="tests\5-quirks.ch8">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="tests\4-flags.ch8">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <None Include="tests\Zero Demo [zeroZshadow, 2007].ch8" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

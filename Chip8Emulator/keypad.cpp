@@ -1,4 +1,5 @@
 #include "keypad.h"
+#include <iostream>
 
 using namespace chip8;
 

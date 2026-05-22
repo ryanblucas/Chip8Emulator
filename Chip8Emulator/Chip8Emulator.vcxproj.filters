@@ -57,6 +57,9 @@
   <ItemGroup>
     <CopyFileToFolders Include="font.ch8" />
     <CopyFileToFolders Include="tests\IBM Logo.ch8" />
+    <CopyFileToFolders Include="tests\3-corax+.ch8" />
+    <CopyFileToFolders Include="tests\5-quirks.ch8" />
+    <CopyFileToFolders Include="tests\4-flags.ch8" />
   </ItemGroup>
   <ItemGroup>
     <None Include="tests\Zero Demo [zeroZshadow, 2007].ch8" />
