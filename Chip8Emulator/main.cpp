@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 			{
 				continue;
 			}
-			chip8::interpreter program(entry.path().string());
+			chip8::interpreter program(entry.path().string(), 600);
 			program.run();
 			// some programs like the IBM Logo will run into an infinite loop. The interpreter takes this as a sign
 			// to terminate the program while keeping an image up. Therefore, the window must remain open after termination.

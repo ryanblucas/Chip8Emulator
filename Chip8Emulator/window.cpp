@@ -55,6 +55,7 @@ static return_code window_handle_events(sf::RenderWindow& sfml_window, window& w
 			window.get_keypad().update(false, key_released->code);
 		}
 	}
+	return return_code::STILL_RUNNING;
 }
 
 void window::thread_proc()

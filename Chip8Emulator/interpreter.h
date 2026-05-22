@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include "window.h"
 
 namespace chip8
@@ -45,7 +46,7 @@ namespace chip8
 	class interpreter
 	{
 	public:
-		interpreter(std::string_view program_directory) : m_memory(program_directory), m_window()
+		interpreter(std::string_view program_directory, int instructions_per_second) : m_memory(program_directory), m_window()
 		{
 			m_registers = {};
 			m_stack = {};
@@ -55,6 +56,9 @@ namespace chip8
 			m_sound_timer = m_timer = 0; 
 			m_running = true;
 			m_waiting_result = 0;
+
+			using namespace std::chrono_literals;
+			m_ns_per_instruction = 1000000000ns / instructions_per_second;
 		}
 		memory& get_memory()
 		{
@@ -79,6 +83,8 @@ namespace chip8
 
 		bool m_running;
 		int m_waiting_result;
+
+		std::chrono::nanoseconds m_ns_per_instruction;
 
 		void do_cycle();
 	};

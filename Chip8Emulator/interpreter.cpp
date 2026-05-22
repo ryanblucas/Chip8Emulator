@@ -264,17 +264,19 @@ void interpreter::run()
 		}
 		else
 		{
+			// 400 instructions per second is on the lowend, and even that is 2.5ms per instruction.
+			// some users might prefer 800 which is 1.25ms, this is just too fast to sleep
+			auto cycle_start = std::chrono::steady_clock::now();
 			do_cycle();
+			while (std::chrono::steady_clock::now() - cycle_start < m_ns_per_instruction);
 		}
 
-		auto curr = std::chrono::steady_clock::now();
 		using namespace std::chrono_literals;
+		auto curr = std::chrono::steady_clock::now();
 		if (curr - last > 16666667ns)
 		{
 			m_sound_timer -= m_sound_timer > 0 ? 1 : 0;
 			m_timer -= m_timer > 0 ? 1 : 0;
 		}
-		// to do: make this more accurate
-		std::this_thread::sleep_for(1000000000ns / 400);
 	}
 }
