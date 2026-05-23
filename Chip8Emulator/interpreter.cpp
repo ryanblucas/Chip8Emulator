@@ -29,14 +29,8 @@ void interpreter::do_cycle()
 		break;
 	}
 	case opcode::JUMP:
-	{
-		if ((instruction.raw & 0x0FFF) == m_program_counter - 2)
-		{
-			m_running = false;
-		}
 		m_program_counter = instruction.raw & 0x0FFF;
 		break;
-	}
 	case opcode::CALL:
 	{
 		m_stack[m_stack_pointer++] = m_program_counter;
@@ -155,7 +149,7 @@ void interpreter::do_cycle()
 		m_address_register = instruction.raw & 0x0FFF;
 		break;
 	case opcode::JUMP_PLUSV0:
-		m_program_counter = instruction.raw & 0x0FFF + m_registers[0x0];
+		m_program_counter = instruction.raw & 0x0FFF + m_does_jump_plus_vx ? m_registers[instruction.nibbles.s2] : m_registers[0x0];
 		break;
 	case opcode::RNG_ANDK:
 		m_registers[instruction.nibbles.s2] = std::rand() & instruction.bytes.b2;
@@ -277,6 +271,7 @@ void interpreter::run()
 		{
 			m_sound_timer -= m_sound_timer > 0 ? 1 : 0;
 			m_timer -= m_timer > 0 ? 1 : 0;
+			last = curr;
 		}
 	}
 }

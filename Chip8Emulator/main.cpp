@@ -5,6 +5,7 @@
 
 int main(int argc, char** argv)
 {
+	auto settings = chip8::interpreter_settings{.instructions_per_second = 400};
 	// remove this try catch block at the top
 	try
 	{
@@ -14,7 +15,7 @@ int main(int argc, char** argv)
 			{
 				continue;
 			}
-			chip8::interpreter program(entry.path().string(), 600);
+			chip8::interpreter program(entry.path().string(), settings);
 			program.run();
 			// some programs like the IBM Logo will run into an infinite loop. The interpreter takes this as a sign
 			// to terminate the program while keeping an image up. Therefore, the window must remain open after termination.

@@ -43,10 +43,19 @@ namespace chip8
 		MEM_DUMP = 0xF065,
 	};
 
+	struct interpreter_settings
+	{
+		int instructions_per_second;
+		// The instruction JUMP_PLUSV0 is supposed to do exactly that, jump to the
+		// address given + the value in V0. However, newer interpreters and versions
+		// actually jump to the address given plus VX instead of V0. This defines that behavior.
+		bool does_jump_plus_vx;
+	};
+
 	class interpreter
 	{
 	public:
-		interpreter(std::string_view program_directory, int instructions_per_second) : m_memory(program_directory), m_window()
+		interpreter(std::string_view program_directory, const interpreter_settings& settings) : m_memory(program_directory), m_window()
 		{
 			m_registers = {};
 			m_stack = {};
@@ -58,7 +67,8 @@ namespace chip8
 			m_waiting_result = 0;
 
 			using namespace std::chrono_literals;
-			m_ns_per_instruction = 1000000000ns / instructions_per_second;
+			m_ns_per_instruction = 1000000000ns / settings.instructions_per_second;
+			m_does_jump_plus_vx = settings.does_jump_plus_vx;
 		}
 		memory& get_memory()
 		{
@@ -85,6 +95,7 @@ namespace chip8
 		int m_waiting_result;
 
 		std::chrono::nanoseconds m_ns_per_instruction;
+		bool m_does_jump_plus_vx;
 
 		void do_cycle();
 	};
