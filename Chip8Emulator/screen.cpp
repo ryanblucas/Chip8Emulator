@@ -34,14 +34,11 @@ void screen::clear()
 	m_pixels.fill(false);
 }
 
-void screen::draw_sprite(int x, int y, const sprite& spr)
+bool screen::draw_sprite(int x, int y, const sprite& spr)
 {
-	// spec says only stipulation is that x and y be within the bounds of the screen,
-	// nothing about clipping part of a sprite if the bottom or right edge goes out of bounds
-	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
-	{
-		return;
-	}
+	x %= screen::WIDTH;
+	y %= screen::HEIGHT;
+	bool result = false;
 	m_lock_pixels = true;
 	for (int i = 0; i < std::min(HEIGHT, y + spr.get_height()) - y; i++)
 	{
@@ -49,9 +46,12 @@ void screen::draw_sprite(int x, int y, const sprite& spr)
 		byte bitmask = byte{ 0x80 };
 		for (int j = 0; j < std::min(WIDTH, x + 8) - x; j++)
 		{
+			bool start = m_pixels[(y + i) * WIDTH + x + j];
 			m_pixels[(y + i) * WIDTH + x + j] ^= (row & bitmask) != byte{ 0 };
 			bitmask >>= 1;
+			result = result || (start && !m_pixels[(y + i) * WIDTH + x + j]);
 		}
 	}
 	m_lock_pixels = false;
+	return result;
 }

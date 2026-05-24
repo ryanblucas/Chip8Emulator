@@ -163,7 +163,7 @@ void interpreter::do_cycle()
 		}
 		int x = m_registers[instruction.nibbles.s2];
 		int y = m_registers[instruction.nibbles.s3];
-		m_window.get_screen().draw_sprite(x, y, sprite(instruction.nibbles.s4, m_address_register, &m_memory));
+		m_registers[0xF] = m_window.get_screen().draw_sprite(x, y, sprite(instruction.nibbles.s4, m_address_register, &m_memory)) ? 1 : 0;
 		break;
 	}
 	case 0xE000:

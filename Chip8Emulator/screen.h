@@ -47,7 +47,8 @@ namespace chip8
 
 		screen();
 		void clear();
-		void draw_sprite(int x, int y, const sprite& spr);
+		// returns whether or not a pixel was disabled by the XOR operation 
+		bool draw_sprite(int x, int y, const sprite& spr);
 
 		// gets pixels if sprite is not being drawn, otherwise waits until that is completed to return pixels
 		std::span<const bool> await_get_pixels() const
