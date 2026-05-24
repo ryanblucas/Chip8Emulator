@@ -191,7 +191,7 @@ void interpreter::do_cycle()
 			arg = m_timer;
 			break;
 		case opcode::WAIT_FOR_KEY:
-			m_waiting_result = instruction.nibbles.s2 + 1;
+			m_key_wait.on_opcode(instruction.nibbles.s2, m_window.get_keypad());
 			break;
 		case opcode::ASSIGN_DELAY_TIMER:
 			m_timer = arg;
@@ -256,17 +256,9 @@ void interpreter::run()
 	while (m_window.get_return_code() == return_code::STILL_RUNNING)
 	{
 		using namespace std::chrono_literals;
-		if (m_waiting_result != 0)
+		if (m_key_wait.active)
 		{
-			for (int i = 0; i < 16; i++)
-			{
-				if (m_window.get_keypad().is_key_pressed(i))
-				{
-					m_registers[m_waiting_result - 1] = i;
-					m_waiting_result = 0;
-					break;
-				}
-			}
+			m_key_wait.on_wait(m_window.get_keypad(), m_registers);
 		}
 		else
 		{

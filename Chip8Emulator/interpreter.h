@@ -58,6 +58,31 @@ namespace chip8
 		bool increment_addr_reg_during_dump = false;
 	};
 
+	struct key_wait
+	{
+		int reg;
+		bool active;
+		std::array<key, 16> keys;
+
+		void on_opcode(int reg, const keypad& kp)
+		{
+			this->reg = reg;
+			active = true;
+			keys = kp.get_keys();
+		}
+		void on_wait(const keypad& kp, std::array<byte, 16> registers)
+		{
+			for (int i = 0; i < 16; i++)
+			{
+				if (kp.is_key_pressed(i) != keys[i].pressed)
+				{
+					registers[reg] = i;
+					active = false;
+				}
+			}
+		}
+	};
+
 	class interpreter
 	{
 	public:
@@ -68,7 +93,7 @@ namespace chip8
 			m_program_counter = memory::PROGRAM_START;
 			m_address_register = 0;
 			m_sound_timer = m_timer = 0;
-			m_waiting_result = 0;
+			m_key_wait = {};
 			m_settings = settings;
 		}
 		memory& get_memory()
@@ -90,7 +115,7 @@ namespace chip8
 		address m_address_register;
 		int m_sound_timer;
 		int m_timer;
-		int m_waiting_result;
+		key_wait m_key_wait;
 
 		interpreter_settings m_settings;
 

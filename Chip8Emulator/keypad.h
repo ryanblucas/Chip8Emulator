@@ -27,6 +27,10 @@ namespace chip8
 			assert(key < 0x10);
 			return m_keys[key].pressed;
 		}
+		const std::array<key, 16>& get_keys() const
+		{
+			return m_keys;
+		}
 		void set_keys(const std::array<key, 16>& keys)
 		{
 			m_keys = keys;
