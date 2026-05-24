@@ -20,11 +20,12 @@ void interpreter::do_cycle()
 		}
 		else if (instruction.raw == opcode::RETURN)
 		{
-			if (m_stack_pointer <= 0)
+			if (m_stack.empty())
 			{
 				throw std::runtime_error("RET opcode executed when stack pointer is non-positive.");
 			}
-			m_program_counter = m_stack[--m_stack_pointer];
+			m_program_counter = m_stack.top();
+			m_stack.pop();
 		}
 		break;
 	}
@@ -33,9 +34,9 @@ void interpreter::do_cycle()
 		break;
 	case opcode::CALL:
 	{
-		m_stack[m_stack_pointer++] = m_program_counter;
+		m_stack.push(m_program_counter);
 		m_program_counter = instruction.raw & 0x0FFF;
-		if (m_stack_pointer >= m_stack.size())
+		if (m_stack.size() >= 16)
 		{
 			throw std::runtime_error("Ran out of stack space!");
 		}

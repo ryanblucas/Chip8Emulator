@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+#include <stack>
 #include "window.h"
 
 namespace chip8
@@ -60,7 +61,6 @@ namespace chip8
 			m_registers = {};
 			m_stack = {};
 			m_program_counter = memory::PROGRAM_START;
-			m_stack_pointer = 0;
 			m_address_register = 0;
 			m_sound_timer = m_timer = 0; 
 			m_running = true;
@@ -84,9 +84,8 @@ namespace chip8
 		window m_window;
 
 		std::array<byte, 16> m_registers;
-		std::array<address, 16> m_stack;
+		std::stack<address> m_stack;
 		address m_program_counter;
-		int m_stack_pointer;
 		address m_address_register;
 		int m_sound_timer;
 		int m_timer;
