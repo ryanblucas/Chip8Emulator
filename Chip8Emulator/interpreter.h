@@ -46,11 +46,16 @@ namespace chip8
 
 	struct interpreter_settings
 	{
-		int instructions_per_second;
+		int refresh_rate = 60;
+		int instructions_per_second = 400;
 		// The instruction JUMP_PLUSV0 is supposed to do exactly that, jump to the
 		// address given + the value in V0. However, newer interpreters and versions
 		// actually jump to the address given plus VX instead of V0. This defines that behavior.
-		bool does_jump_plus_vx;
+		bool does_jump_plus_vx = true;
+		// The shift instruction provides two registers. It's defined to only work on one, but
+		// some interpreters assign the value of x to the operation done on y.
+		bool shift_xy = false;
+		bool increment_addr_reg_during_dump = false;
 	};
 
 	class interpreter
@@ -62,13 +67,9 @@ namespace chip8
 			m_stack = {};
 			m_program_counter = memory::PROGRAM_START;
 			m_address_register = 0;
-			m_sound_timer = m_timer = 0; 
-			m_running = true;
+			m_sound_timer = m_timer = 0;
 			m_waiting_result = 0;
-
-			using namespace std::chrono_literals;
-			m_ns_per_instruction = 1000000000ns / settings.instructions_per_second;
-			m_does_jump_plus_vx = settings.does_jump_plus_vx;
+			m_settings = settings;
 		}
 		memory& get_memory()
 		{
@@ -89,12 +90,9 @@ namespace chip8
 		address m_address_register;
 		int m_sound_timer;
 		int m_timer;
-
-		bool m_running;
 		int m_waiting_result;
 
-		std::chrono::nanoseconds m_ns_per_instruction;
-		bool m_does_jump_plus_vx;
+		interpreter_settings m_settings;
 
 		void do_cycle();
 	};

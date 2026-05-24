@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv)
 {
-	auto settings = chip8::interpreter_settings{.instructions_per_second = 400, .does_jump_plus_vx = true};
+	auto settings = chip8::interpreter_settings{.instructions_per_second = 800, .does_jump_plus_vx = false, .shift_xy = true, .increment_addr_reg_during_dump = true};
 	// remove this try catch block at the top
 	try
 	{
