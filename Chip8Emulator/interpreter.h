@@ -58,29 +58,20 @@ namespace chip8
 		bool increment_addr_reg_during_dump = false;
 	};
 
-	struct key_wait
+	class key_wait
 	{
-		int reg;
-		bool active;
-		std::array<key, 16> keys;
-
-		void on_opcode(int reg, const keypad& kp)
+	public:
+		bool is_active() const
 		{
-			this->reg = reg;
-			active = true;
-			keys = kp.get_keys();
+			return m_active;
 		}
-		void on_wait(const keypad& kp, std::array<byte, 16> registers)
-		{
-			for (int i = 0; i < 16; i++)
-			{
-				if (kp.is_key_pressed(i) != keys[i].pressed)
-				{
-					registers[reg] = i;
-					active = false;
-				}
-			}
-		}
+		void on_opcode(int reg, const keypad& kp);
+		void on_wait(const keypad& kp, std::array<byte, 16>& registers);
+	private:
+		int m_reg;
+		bool m_active;
+		std::array<key, 16> m_keys;
+		std::vector<int> m_waiting_keys;
 	};
 
 	class interpreter
