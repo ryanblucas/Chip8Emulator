@@ -197,7 +197,7 @@ void interpreter::do_cycle()
 			m_timer = arg;
 			break;
 		case opcode::ASSIGN_SOUND_TIMER:
-			m_sound_timer = arg;
+			m_window.beep_set(arg);
 			break;
 		case opcode::ADD_ADDRESS:
 			m_address_register += arg;
@@ -272,7 +272,7 @@ void interpreter::run()
 		auto curr = std::chrono::steady_clock::now();
 		if (curr - last > 1000000000ns / m_settings.refresh_rate)
 		{
-			m_sound_timer -= m_sound_timer > 0 ? 1 : 0;
+			m_window.beep_tick();
 			m_timer -= m_timer > 0 ? 1 : 0;
 			last = curr;
 		}

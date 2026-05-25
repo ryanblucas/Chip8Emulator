@@ -92,7 +92,7 @@ namespace chip8
 			m_stack = {};
 			m_program_counter = memory::PROGRAM_START;
 			m_address_register = 0;
-			m_sound_timer = m_timer = 0;
+			m_timer = 0;
 			m_key_wait = {};
 			m_settings = settings;
 		}
@@ -113,7 +113,6 @@ namespace chip8
 		std::stack<address> m_stack;
 		address m_program_counter;
 		address m_address_register;
-		int m_sound_timer;
 		int m_timer;
 		key_wait m_key_wait;
 

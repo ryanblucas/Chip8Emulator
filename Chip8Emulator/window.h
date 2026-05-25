@@ -14,10 +14,14 @@ namespace chip8
 		UNKNOWN,
 	};
 
+	class beep_timer;
 	class window
 	{
 	public:
 		window();
+		~window();
+		void beep_set(int ticks);
+		void beep_tick();
 		screen& get_screen()
 		{
 			return m_screen;
@@ -35,10 +39,13 @@ namespace chip8
 			return m_window_thread_code;
 		}
 	private:
+		static const int BEEP_FREQUENCY = 350;
 		screen m_screen;
 		keypad m_keypad;
 		std::jthread m_window_thread;
 		return_code m_window_thread_code;
+
+		std::unique_ptr<beep_timer> m_beep_timer;
 
 		void thread_proc();
 	};

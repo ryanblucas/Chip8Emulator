@@ -61,6 +61,7 @@
     <CopyFileToFolders Include="tests\5-quirks.ch8" />
     <CopyFileToFolders Include="tests\4-flags.ch8" />
     <CopyFileToFolders Include="tests\6-keypad.ch8" />
+    <CopyFileToFolders Include="tests\7-beep.ch8" />
   </ItemGroup>
   <ItemGroup>
     <None Include="tests\Zero Demo [zeroZshadow, 2007].ch8" />
