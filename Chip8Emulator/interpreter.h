@@ -61,6 +61,7 @@ namespace chip8
 	class key_wait
 	{
 	public:
+		key_wait() : m_reg(0), m_active(false), m_keys({}), m_waiting_keys({}) { }
 		bool is_active() const
 		{
 			return m_active;
