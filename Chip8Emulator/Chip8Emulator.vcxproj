@@ -74,6 +74,10 @@
     <IncludePath>C:\Developer\SFML-3.1.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Developer\SFML-3.1.0\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>C:\Developer\SFML-3.1.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Developer\SFML-3.1.0\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -125,7 +129,10 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PostBuildEvent>
-      <Command>xcopy /y /d "C:\Developer\SFML-3.1.0\bin\*" "$(OutDir)"</Command>
+      <Command>xcopy /y /d "C:\Developer\SFML-3.1.0\bin\sfml-audio-3.dll" "$(OutDir)"
+xcopy /y /d "C:\Developer\SFML-3.1.0\bin\sfml-graphics-3.dll" "$(OutDir)"
+xcopy /y /d "C:\Developer\SFML-3.1.0\bin\sfml-system-3.dll" "$(OutDir)"
+xcopy /y /d "C:\Developer\SFML-3.1.0\bin\sfml-window-3.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -134,17 +141,24 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>sfml-audio.lib;sfml-graphics.lib;sfml-system.lib;sfml-window.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "C:\Developer\SFML-3.1.0\bin\sfml-audio-3.dll" "$(OutDir)"
+xcopy /y /d "C:\Developer\SFML-3.1.0\bin\sfml-graphics-3.dll" "$(OutDir)"
+xcopy /y /d "C:\Developer\SFML-3.1.0\bin\sfml-system-3.dll" "$(OutDir)"
+xcopy /y /d "C:\Developer\SFML-3.1.0\bin\sfml-window-3.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="interpreter.cpp" />
@@ -168,26 +182,26 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="tests\IBM Logo.ch8">
+    <None Include="tests\IBM Logo.ch8">
       <FileType>Document</FileType>
-    </CopyFileToFolders>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="tests\3-corax+.ch8">
+    <None Include="tests\3-corax+.ch8">
       <FileType>Document</FileType>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="tests\5-quirks.ch8">
+    </None>
+    <None Include="tests\5-quirks.ch8">
       <FileType>Document</FileType>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="tests\4-flags.ch8">
+    </None>
+    <None Include="tests\4-flags.ch8">
       <FileType>Document</FileType>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="tests\6-keypad.ch8">
+    </None>
+    <None Include="tests\6-keypad.ch8">
       <FileType>Document</FileType>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="tests\7-beep.ch8">
+    </None>
+    <None Include="tests\7-beep.ch8">
       <FileType>Document</FileType>
-    </CopyFileToFolders>
+    </None>
     <None Include="tests\Zero Demo [zeroZshadow, 2007].ch8" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

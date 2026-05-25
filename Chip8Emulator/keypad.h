@@ -22,6 +22,7 @@ namespace chip8
 		// user keys are the keys the user has currently pressed down from their keyboard.
 		// this function maps those to the corresponding CHIP-8 keys and updates the state of the keys in the emulator.
 		void update(bool is_down, sf::Keyboard::Key key);
+		void set_keymap(const std::array<sf::Keyboard::Key, 16>& keys);
 		bool is_key_pressed(nibble key) const
 		{
 			assert(key < 0x10);
@@ -30,10 +31,6 @@ namespace chip8
 		const std::array<key, 16>& get_keys() const
 		{
 			return m_keys;
-		}
-		void set_keys(const std::array<key, 16>& keys)
-		{
-			m_keys = keys;
 		}
 	private:
 		std::array<key, 16> m_keys;

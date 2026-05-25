@@ -18,7 +18,7 @@ namespace chip8
 	class window
 	{
 	public:
-		window();
+		window(float beep_frequency = 440.F);
 		~window();
 		void beep_set(int ticks);
 		void beep_tick();

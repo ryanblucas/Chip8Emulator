@@ -33,6 +33,14 @@ void keypad::update(bool is_down, sf::Keyboard::Key key)
 	}
 }
 
+void keypad::set_keymap(const std::array<sf::Keyboard::Key, 16>& keys)
+{
+	for (int i = 0; i < 16; i++)
+	{
+		m_keys[i].user_key = keys[i];
+	}
+}
+
 void key_wait::on_opcode(int reg, const keypad& kp)
 {
 	m_reg = reg;

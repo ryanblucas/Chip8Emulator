@@ -62,13 +62,13 @@ namespace chip8
 
 using namespace chip8;
 
-window::window()
+window::window(float beep_frequency)
 {
 	m_window_thread_code = return_code::STILL_RUNNING;
 	m_window_thread = std::jthread(&window::thread_proc, this);
 	m_screen = screen{};
 	m_keypad = keypad{};
-	m_beep_timer = std::make_unique<beep_timer>(440.F);
+	m_beep_timer = std::make_unique<beep_timer>(beep_frequency);
 }
 
 window::~window() = default;
