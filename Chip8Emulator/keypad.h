@@ -8,12 +8,12 @@
 
 namespace chip8
 {
-	class window;
 	struct key
 	{
 		sf::Keyboard::Key user_key;
 		bool pressed;
 	};
+
 	class keypad
 	{
 	public:
@@ -37,5 +37,22 @@ namespace chip8
 		}
 	private:
 		std::array<key, 16> m_keys;
+	};
+
+	class key_wait
+	{
+	public:
+		key_wait() : m_reg(0), m_active(false), m_keys({}), m_waiting_keys({}) {}
+		bool is_active() const
+		{
+			return m_active;
+		}
+		void on_opcode(int reg, const keypad& kp);
+		void on_wait(const keypad& kp, std::array<byte, 16>& registers);
+	private:
+		int m_reg;
+		bool m_active;
+		std::array<key, 16> m_keys;
+		std::vector<int> m_waiting_keys;
 	};
 }

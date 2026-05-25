@@ -6,34 +6,6 @@
 
 using namespace chip8;
 
-void key_wait::on_opcode(int reg, const keypad& kp)
-{
-	m_reg = reg;
-	m_active = true;
-	m_keys = kp.get_keys();
-}
-
-void key_wait::on_wait(const keypad& kp, std::array<byte, 16>& registers)
-{
-	for (int i = 0; i < 16; i++)
-	{
-		if (kp.is_key_pressed(i) != m_keys[i].pressed)
-		{
-			m_waiting_keys.push_back(i);
-		}
-	}
-	for (int key : m_waiting_keys)
-	{
-		if (!kp.is_key_pressed(key))
-		{
-			registers[m_reg] = key;
-			m_waiting_keys.clear();
-			m_active = false;
-			return;
-		}
-	}
-}
-
 void interpreter::do_cycle()
 {
 	auto instruction = m_memory.get_instruction(m_program_counter);
