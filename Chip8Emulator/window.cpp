@@ -18,7 +18,6 @@ namespace chip8
 		}
 		void set(int value)
 		{
-			std::cout << value << "\n";
 			if (value > 0 && m_timer_value <= 0)
 			{
 				m_beep_sound->play();
